@@ -45,6 +45,7 @@ else:
 import logging
 import json
 import random
+import ssl
 
 _logger = logging.getLogger(__name__)
 
@@ -83,8 +84,9 @@ class XmlRPCConnector(Connector):
         self.url = 'http://%s:%d/xmlrpc' % (hostname, port)
 
     def send(self, service_name, method, *args):
+        context = ssl.SSLContext()
         url = '%s/%s' % (self.url, service_name)
-        service = ServerProxy(url)
+        service = ServerProxy(url, context = context)
         return getattr(service, method)(*args)
 
 class XmlRPCSConnector(XmlRPCConnector):
